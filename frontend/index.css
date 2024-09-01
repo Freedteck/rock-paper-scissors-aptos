@@ -315,7 +315,7 @@ button {
   border: none;
   outline: 1px solid var(--header_outline);
   align-self: flex-end;
-  margin-top: 3rem;
+  margin-top: auto;
 
   &:hover {
     background: var(--header_outline);
