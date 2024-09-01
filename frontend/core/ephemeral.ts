@@ -11,9 +11,7 @@ export const EphemeralKeyPairEncoding = {
   }),
 };
 
-export const validateEphemeralKeyPair = (
-  keyPair: EphemeralKeyPair
-): EphemeralKeyPair | undefined =>
+export const validateEphemeralKeyPair = (keyPair: EphemeralKeyPair): EphemeralKeyPair | undefined =>
   isValidEphemeralKeyPair(keyPair) ? keyPair : undefined;
 
 export const isValidEphemeralKeyPair = (keyPair: EphemeralKeyPair): boolean => {
@@ -27,7 +25,7 @@ export const isValidEphemeralKeyPair = (keyPair: EphemeralKeyPair): boolean => {
  * @param params Additional parameters for the ephemeral key pair
  */
 export const createEphemeralKeyPair = ({
-  expiryDateSecs = BigInt(Math.floor(Date.now() / 1000)) + BigInt(24 * 60 * 60),
+  expiryDateSecs = Number(BigInt(Math.floor(Date.now() / 1000)) + BigInt(24 * 60 * 60)),
   privateKey = Ed25519PrivateKey.generate(),
   ...options
 }: Partial<ConstructorParameters<typeof EphemeralKeyPair>[0]> = {}) =>

@@ -90,11 +90,13 @@ const Results: React.FC<ResultsProps> = ({ selected, newMove, activeAccount, ind
         if (content === 2) {
           // Player wins
           const playerScore = parseInt(localStorage.getItem("playerScore") || "0");
+          localStorage.removeItem("playerScore");
           localStorage.setItem("playerScore", (playerScore + 1).toString());
           return;
         } else if (content === 3) {
           // Computer wins
           const computerScore = parseInt(localStorage.getItem("computerScore") || "0");
+          localStorage.removeItem("computerScore");
           localStorage.setItem("computerScore", (computerScore + 1).toString());
           return;
         }

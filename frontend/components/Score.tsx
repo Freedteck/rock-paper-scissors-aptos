@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const Score = () => {
   const [playerScore, setPlayerScore] = useState<number>(0);
@@ -7,7 +7,7 @@ const Score = () => {
   const storedComputerScore = parseInt(localStorage.getItem("computerScore") || "0");
 
   useEffect(() => {
-    if (storedPlayerScore && storedComputerScore) {
+    if (storedPlayerScore || storedComputerScore) {
       setPlayerScore(storedPlayerScore);
       setComputerScore(storedComputerScore);
     }
