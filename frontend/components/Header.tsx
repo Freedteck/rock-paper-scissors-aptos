@@ -6,10 +6,12 @@ import { collapseAddress } from "@/core/utils";
 
 type HeaderProps = {
   activeAccount: any;
+  balance: number | null;
 };
 
-export const Header: React.FC<HeaderProps> = ({ activeAccount }) => {
+export const Header: React.FC<HeaderProps> = ({ activeAccount, balance }) => {
   const ephemeralKeyPair = useEphemeralKeyPair();
+  const [copied, setCopied] = React.useState(false);
 
   const redirectUrl = new URL("https://accounts.google.com/o/oauth2/v2/auth");
 
@@ -35,6 +37,14 @@ export const Header: React.FC<HeaderProps> = ({ activeAccount }) => {
     nonce: ephemeralKeyPair.nonce,
   });
   redirectUrl.search = searchParams.toString();
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000); // Reset copy status after 2 seconds
+    });
+  };
+
   return (
     <header>
       <h1>
@@ -54,9 +64,18 @@ export const Header: React.FC<HeaderProps> = ({ activeAccount }) => {
       )}
 
       {activeAccount && (
-        <div className="flex justify-center items-center border rounded-lg px-8 py-2 shadow-sm cursor-not-allowed">
-          <GoogleLogo />
-          {collapseAddress(activeAccount?.accountAddress.toString())}
+        <div className="btns">
+          <div className="flex justify-center items-center border rounded-lg px-8 py-2 shadow-sm cursor-not-allowed">
+            <GoogleLogo />
+            {collapseAddress(activeAccount?.accountAddress.toString())}
+            <i
+              className="fa-regular fa-copy ml-2 cursor-pointer hover:text-gray-600"
+              onClick={() => copyToClipboard(activeAccount?.accountAddress.toString())}
+              title="Copy address"
+            ></i>
+            {copied && <span className="ml-2 text-green-500">Copied!</span>}
+          </div>
+          {balance && <p className="pt-3">Balance: {balance} APT</p>}
         </div>
       )}
     </header>

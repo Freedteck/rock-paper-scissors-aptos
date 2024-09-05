@@ -17,6 +17,7 @@ export const StartGame: React.FC<StartGameProps> = ({ activeAccount, setIsStarte
   const [text, setText] = useState<string | null>();
   const navigate = useNavigate();
 
+  // On Start Game
   const onClickButton = async () => {
     if (!activeAccount) {
       setText("Please Connect to your Account");
@@ -53,8 +54,12 @@ export const StartGame: React.FC<StartGameProps> = ({ activeAccount, setIsStarte
         title: "Game started",
         description: `You can now make your move, hash: ${executedTransaction.hash}`,
       });
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: `Make sure you have some APT. ${error.message}`,
+      });
     }
   };
 

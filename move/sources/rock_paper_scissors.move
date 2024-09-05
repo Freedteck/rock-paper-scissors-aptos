@@ -12,6 +12,8 @@ module rock_paper_scissors_addr::rock_paper_scissors {
         computer_move: u8,
         result: u8,
         is_active: bool,
+        player_score: u8,   // Player score
+        computer_score: u8, // Computer score
     }
 
     public entry fun start_game(account: &signer) acquires Game {
@@ -24,6 +26,8 @@ module rock_paper_scissors_addr::rock_paper_scissors {
                 computer_move: 0,
                 result: 0,
                 is_active: true,
+                player_score: 0,   // Initialize scores
+                computer_score: 0, // Initialize scores
             });
         } else {
             let game = borrow_global_mut<Game>(player);
@@ -54,7 +58,15 @@ module rock_paper_scissors_addr::rock_paper_scissors {
         let game = borrow_global_mut<Game>(signer::address_of(account));
         game.result = determine_winner(game.player_move, game.computer_move);
         game.is_active = false;
+
+        // Update scores based on the result
+        if (game.result == 2) {
+            game.player_score = game.player_score + 1;  // Player wins, increment player score
+        } else if (game.result == 3) {
+            game.computer_score = game.computer_score + 1;  // Computer wins, increment computer score
+        }
     }
+
 
     fun determine_winner(player_move: u8, computer_move: u8): u8 {
         if (player_move == ROCK && computer_move == SCISSORS) {
@@ -83,5 +95,16 @@ module rock_paper_scissors_addr::rock_paper_scissors {
     #[view]
     public fun get_game_results(account_addr: address): u8 acquires Game {
         borrow_global<Game>(account_addr).result
+    }
+
+    // New functions to get the player's and computer's scores
+    #[view]
+    public fun get_player_score(account_addr: address): u8 acquires Game {
+        borrow_global<Game>(account_addr).player_score
+    }
+
+    #[view]
+    public fun get_computer_score(account_addr: address): u8 acquires Game {
+        borrow_global<Game>(account_addr).computer_score
     }
 }

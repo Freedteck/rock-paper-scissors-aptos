@@ -17,9 +17,20 @@ type ResultsProps = {
   newMove: number | null;
   activeAccount: any;
   indexToSelection: { [key: number]: string };
+  playerScore: number;
+  computerScore: number;
+  fetchScores: () => void;
 };
 
-const Results: React.FC<ResultsProps> = ({ selected, newMove, activeAccount, indexToSelection }) => {
+const Results: React.FC<ResultsProps> = ({
+  selected,
+  newMove,
+  activeAccount,
+  indexToSelection,
+  playerScore,
+  computerScore,
+  fetchScores,
+}) => {
   const [computerMove, setComputerMove] = useState<number | null>(null);
   const [gameResults, setGameResults] = useState<number | null>(null);
   const [showRules, setShowRules] = useState(false);
@@ -59,6 +70,7 @@ const Results: React.FC<ResultsProps> = ({ selected, newMove, activeAccount, ind
         fetchComputerMove();
         await finalizeGame(activeAccount);
         fetchGameResults();
+        fetchScores();
       } catch (error) {
         console.error(error);
       }
@@ -84,22 +96,13 @@ const Results: React.FC<ResultsProps> = ({ selected, newMove, activeAccount, ind
     if (activeAccount) {
       try {
         const content = await getGameResults({ accountAddress: activeAccount.accountAddress.toString() });
-        setGameResults(content);
 
-        // Update the score in localStorage based on the game results
-        if (content === 2) {
-          // Player wins
-          const playerScore = parseInt(localStorage.getItem("playerScore") || "0");
-          localStorage.removeItem("playerScore");
-          localStorage.setItem("playerScore", (playerScore + 1).toString());
-          return;
-        } else if (content === 3) {
-          // Computer wins
-          const computerScore = parseInt(localStorage.getItem("computerScore") || "0");
-          localStorage.removeItem("computerScore");
-          localStorage.setItem("computerScore", (computerScore + 1).toString());
+        // If gameResults is already set, we return early to avoid double updating the score.
+        if (gameResults !== null) {
           return;
         }
+
+        setGameResults(content);
       } catch (error: any) {
         toast({
           variant: "destructive",
@@ -115,7 +118,7 @@ const Results: React.FC<ResultsProps> = ({ selected, newMove, activeAccount, ind
   return (
     <main>
       {showRules && <Rules setShowRules={setShowRules} />}
-      <Score />
+      <Score playerScore={playerScore} computerScore={computerScore} />
       <div className="selection-result">
         <div className="picked">
           <p>You picked</p>

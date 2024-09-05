@@ -9,15 +9,24 @@ type MainGameProps = {
   isStarted: boolean;
   handleSelection: (selection: "rock" | "paper" | "scissors") => void;
   setIsStarted: (isStarted: boolean) => void;
+  playerScore: number;
+  computerScore: number;
 };
 
-const MainGame: React.FC<MainGameProps> = ({ activeAccount, isStarted, handleSelection, setIsStarted }) => {
+const MainGame: React.FC<MainGameProps> = ({
+  activeAccount,
+  isStarted,
+  handleSelection,
+  setIsStarted,
+  playerScore,
+  computerScore,
+}) => {
   const [showRules, setShowRules] = React.useState(false);
   return (
     <main className="main-game">
-      {isStarted ? (
+      {isStarted && activeAccount ? (
         <>
-          <Score />
+          <Score playerScore={playerScore} computerScore={computerScore} />
           <Selections onSelect={handleSelection} />
           <button className="rules-button" onClick={() => setShowRules(true)}>
             RULES
