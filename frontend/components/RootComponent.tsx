@@ -126,6 +126,10 @@ const RootComponent: React.FC = () => {
   };
 
   useEffect(() => {
+    localStorage.removeItem("started");
+  }, []);
+
+  useEffect(() => {
     if (activeAccount) {
       fetchBalance();
     }
